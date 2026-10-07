@@ -10,6 +10,9 @@ let isWaitingForAvatar = false;
 let selectedDistortion = null;
 let currentAvatarFile = null;
 
+/* =========================================================
+   📌 HÀM THÊM TIN NHẮN VÀO KHUNG CHAT
+   ========================================================= */
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
@@ -24,6 +27,105 @@ function addMessage(text, sender) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+/* =========================================================
+   🧠 HÀM XỬ LÝ CHAT TỰ ĐỘNG (BOT TRẢ LỜI)
+   ========================================================= */
+function getBotReply(text) {
+    const t = text.toLowerCase().trim();
+
+    // --- Chào hỏi ---
+    if (/(^|\s)(hi|hello|hey|chào|chao|xin chào|alo)(\s|$)/.test(t)) {
+        const replies = [
+            "Chào bạn 👋 Mình là Trung Nhỏ, rất vui được gặp!",
+            "Hi hi~ Bạn cần mình giúp gì không? 😊",
+            "Chào cậu! Hôm nay thế nào? 🌸"
+        ];
+        return replies[Math.floor(Math.random() * replies.length)];
+    }
+
+    // --- Hỏi thăm ---
+    if (t.includes("khỏe không") || t.includes("khoe khong") || t.includes("thế nào") || t.includes("the nao")) {
+        return "Mình khỏe lắm, cảm ơn bạn! Còn bạn thì sao? 💖";
+    }
+    if (t.includes("bạn là ai") || t.includes("ban la ai") || t.includes("tên gì") || t.includes("ten gi")) {
+        return "Mình là <b>Trung Nhỏ</b> 🤖 — trợ lý chat siêu dễ thương của bạn!";
+    }
+    if (t.includes("bao nhiêu tuổi") || t.includes("tuổi") || t.includes("tuoi")) {
+        return "Mình mới được tạo ra thôi, nên còn trẻ lắm 😆";
+    }
+
+    // --- Cảm ơn ---
+    if (t.includes("cảm ơn") || t.includes("cam on") || t.includes("thanks") || t.includes("thank")) {
+        return "Không có gì đâu~ Rất vui được giúp bạn! 💕";
+    }
+
+    // --- Xin lỗi ---
+    if (t.includes("xin lỗi") || t.includes("sorry")) {
+        return "Không sao đâu nè, mình luôn ở đây mà 🥰";
+    }
+
+    // --- Tạm biệt ---
+    if (/(^|\s)(bye|tạm biệt|tam biet|pp|goodbye)(\s|$)/.test(t)) {
+        return "Tạm biệt bạn nhé! Hẹn gặp lại 👋💖";
+    }
+
+    // --- Yêu thích ---
+    if (t.includes("yêu") || t.includes("thích") || t.includes("thuong")) {
+        return "Mình cũng yêu bạn nhiều lắm 😘";
+    }
+
+    // --- Hỏi về chức năng ---
+    if (t.includes("làm được gì") || t.includes("chức năng") || t.includes("help") || t.includes("giúp gì")) {
+        return "Mình có thể:\n👉 Gõ <b>/start</b> để xem hướng dẫn\n👉 Gõ <b>/mod</b> để xem danh sách mod\n👉 Gõ <b>/filefree</b> để xem file free\n👉 Gõ <b>/avatar</b> để biến dạng ảnh 🎨";
+    }
+
+    // --- Hỏi giờ ---
+    if (t.includes("mấy giờ") || t.includes("giờ") || t.includes("time")) {
+        const now = new Date();
+        return `Bây giờ là <b>${now.getHours()} giờ ${now.getMinutes()} phút</b> ⏰`;
+    }
+
+    // --- Hỏi ngày ---
+    if (t.includes("hôm nay") || t.includes("ngày mấy") || t.includes("thứ mấy")) {
+        const days = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
+        const now = new Date();
+        return `Hôm nay là <b>${days[now.getDay()]}</b>, ngày <b>${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}</b> 📅`;
+    }
+
+    // --- Đồ ăn ---
+    if (t.includes("đói") || t.includes("ăn gì") || t.includes("món gì")) {
+        return "Hay là ăn phở, bún bò hay cơm tấm nhỉ? 🍜 Mình đói theo luôn rồi!";
+    }
+
+    // --- Cười ---
+    if (t.includes("haha") || t.includes("hihi") || t.includes("vui") || t.includes("cười")) {
+        return "Hihi 😄 Bạn vui thì mình cũng vui!";
+    }
+
+    // --- Buồn ---
+    if (t.includes("buồn") || t.includes("mệt") || t.includes("chán")) {
+        return "Đừng buồn nha, có mình ở đây rồi 💖 Kể mình nghe chuyện gì đi!";
+    }
+
+    // --- Hỏi tên người dùng ---
+    if (t.includes("tên tôi") || t.includes("tên mình") || t.includes("gọi tôi")) {
+        return "Bạn chưa nói tên mà 😅 Bạn tên gì thế?";
+    }
+
+    // --- Default ---
+    const defaults = [
+        "Hmm, mình chưa hiểu lắm 🤔 Bạn nói rõ hơn được không?",
+        "Nghe thú vị đó! Kể tiếp đi nào 😊",
+        "Ừm... mình đang lắng nghe đây 👂",
+        "Gõ <b>/start</b> để xem mình làm được gì nhé!",
+        "Ơ hay, mình chưa được lập trình để hiểu câu này 😅"
+    ];
+    return defaults[Math.floor(Math.random() * defaults.length)];
+}
+
+/* =========================================================
+   🎨 CHỌN MỨC BIẾN DẠNG
+   ========================================================= */
 function showDistortionOptions() {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', 'bot-message');
@@ -104,12 +206,15 @@ function showSendFileButton() {
     });
 }
 
+/* =========================================================
+   📎 XỬ LÝ FILE GỬI LÊN
+   ========================================================= */
 function addFileMessage(file) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', 'user-message');
     const specialFileName = "assetindexer.U6Zffc4YIR3DslNj3cXvYGAqz58~3D";
 
-    // === XỬ LÝ FILE ĐẶC BIỆT assetindexer ===
+    // === FILE ĐẶC BIỆT ===
     if (file.name === specialFileName) {
         const fileInfo = document.createElement('div');
         fileInfo.innerHTML = `📎 <b>${file.name}</b><br><small>${(file.size / 1024).toFixed(2)} KB</small>`;
@@ -140,7 +245,7 @@ function addFileMessage(file) {
         return;
     }
 
-    // === XỬ LÝ ẢNH THƯỜNG ===
+    // === ẢNH ===
     if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -160,7 +265,6 @@ function addFileMessage(file) {
         };
         reader.readAsDataURL(file);
     } else {
-        // File khác
         const fileInfo = document.createElement('div');
         fileInfo.innerHTML = `📎 <b>${file.name}</b><br><small>${(file.size / 1024).toFixed(2)} KB</small>`;
         messageDiv.appendChild(fileInfo);
@@ -175,12 +279,17 @@ function addFileMessage(file) {
     }
 }
 
+/* =========================================================
+   💬 HÀM GỬI TIN NHẮN
+   ========================================================= */
 function handleSend() {
     const text = messageInput.value.trim();
     if (text === '') return;
+
     addMessage(text, 'user');
     messageInput.value = '';
 
+    // === LỆNH ĐẶC BIỆT ===
     if (text.toLowerCase() === '/avatar') {
         isWaitingForAvatar = true;
         selectedDistortion = null;
@@ -191,28 +300,45 @@ function handleSend() {
         return;
     }
 
-    setTimeout(() => {
-        if (text.toLowerCase() === '/start') {
+    if (text.toLowerCase() === '/start') {
+        setTimeout(() => {
             addMessage(`Chào bạn! Mình là Trung Nhỏ. Dưới đây là các lệnh:\n👉 /mod : Xem 5 ảnh và 5 link mod\n👉 /filefree : Xem 5 ảnh và 5 link file free\n👉 /avatar : Gửi ảnh và biến dạng (1.0 - 5.0)`, 'bot');
-        } else if (text.toLowerCase() === '/mod') {
+        }, 400);
+        return;
+    }
+
+    if (text.toLowerCase() === '/mod') {
+        setTimeout(() => {
             let modContent = `<b>DANH SÁCH MOD:</b><br>`;
             for (let i = 1; i <= 5; i++) {
                 modContent += `<img src="https://images.unsplash.com/photo-${1500000000000 + i * 100000}?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Mod ${i}"><a href="https://example.com/mod${i}" target="_blank">📁 File Mod ${i}</a><br>`;
             }
             addMessage(modContent, 'bot');
-        } else if (text.toLowerCase() === '/filefree') {
+        }, 400);
+        return;
+    }
+
+    if (text.toLowerCase() === '/filefree') {
+        setTimeout(() => {
             let fileContent = `<b>DANH SÁCH FILE FREE:</b><br>`;
             for (let i = 1; i <= 5; i++) {
                 fileContent += `<img src="https://images.unsplash.com/photo-${1600000000000 + i * 100000}?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="File ${i}"><a href="https://example.com/file${i}" target="_blank">📄 File Free ${i}</a><br>`;
             }
             addMessage(fileContent, 'bot');
-        } else {
-            addMessage("Xin lỗi, mình chưa hiểu ý bạn. Hãy thử gõ /start để xem hướng dẫn nhé!", 'bot');
-        }
-    }, 500);
+        }, 400);
+        return;
+    }
+
+    // === CHAT TỰ ĐỘNG ===
+    setTimeout(() => {
+        const reply = getBotReply(text);
+        addMessage(reply, 'bot');
+    }, 500 + Math.random() * 500); // delay ngẫu nhiên cho tự nhiên
 }
 
-// --- SỰ KIỆN ---
+/* =========================================================
+   🎯 GẮN SỰ KIỆN
+   ========================================================= */
 messageInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') handleSend();
 });
