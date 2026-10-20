@@ -1,48 +1,61 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trung Nhỏ Chat</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>UMA MULTI TOOL</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="chat-box">
-        <div class="message bot-message">XIN CHÀO, TÔI LÀ TRUNG NHỎ BẠN CẦN CHAT GÌ</div>
-    </div>
+<div class="container" id="mainTool">
+  <div class="logo-wrap">
+    <img id="logoImg" class="logo" alt="Logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='none' stroke='%237ee8fa' stroke-width='3'/><text x='50' y='62' font-size='42' font-family='monospace' font-weight='bold' fill='%23a8f0ff' text-anchor='middle'>U</text></svg>">
+  </div>
+  <h1>UMA MULTI TOOL</h1>
+  <div class="subtitle">Chỉnh Hex (đổi tên bone)</div>
 
-    <button class="bottom-left-btn" id="select-file-btn" title="Chọn tệp để gửi">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-    </button>
+  <div id="status" class="status wait">Chưa chọn file</div>
 
-    <input type="file" id="file-input" accept="image/*, */*">
+  <div class="box">
+    <h2>1. Chọn file</h2>
+    <input type="file" id="fileInputHex">
+    <div class="hint">Tên file phải đúng: <b>assetindexer.U6Zffc4YIR3DslNj3cXvYGAqz58~3D</b></div>
+  </div>
 
-    <div class="input-area">
-        <button class="circle-btn" title="Đính kèm">
-            <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-        </button>
-        <div class="text-input-wrapper">
-            <input type="text" id="message-input" placeholder="Message" autocomplete="off">
-            <div class="leaf-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                    <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
-                    <path d="M12 8v8" stroke-width="1.5" stroke="#999" fill="none"/>
-                    <path d="M9 12h6" stroke-width="1.5" stroke="#999" fill="none"/>
-                </svg>
-            </div>
-        </div>
-        <button class="circle-btn" title="Ghi âm">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
-        </button>
-    </div>
+  <div class="box">
+    <h2>2. Danh sách thay bone</h2>
+    <div class="hint">Mỗi dòng là 1 bone. Dòng trên và dòng dưới tương ứng theo thứ tự.</div>
 
-    <script src="script.js"></script>
+    <label>Tên bone GỐC (trên)<span class="count-badge" id="countOld">0</span></label>
+    <textarea id="listOld" placeholder="bone_Head&#10;bone_Neck&#10;bone_Spine&#10;..." spellcheck="false"></textarea>
+
+    <label>Tên bone THAY THẾ (dưới)<span class="count-badge" id="countNew">0</span></label>
+    <textarea id="listNew" placeholder="bone_NewHead&#10;bone_NewNeck&#10;bone_NewSpine&#10;..." spellcheck="false"></textarea>
+
+    <button class="secondary" id="btnFillDemo">Điền 56 bone mẫu</button>
+    <button class="secondary" id="btnClearList">Xóa hết</button>
+  </div>
+
+  <div class="box">
+    <h2>3. Thực hiện</h2>
+    <button id="btnApplyHex" disabled>THAY BONE</button>
+  </div>
+
+  <div class="box">
+    <h2>Xuất file</h2>
+    <button id="btnSave" disabled>Chia sẻ file đã chỉnh</button>
+    <button class="secondary" id="btnSaveOriginal" disabled>Chia sẻ file gốc</button>
+  </div>
+
+  <div class="box">
+    <h2>Log</h2>
+    <div id="log">Sẵn sàng...</div>
+  </div>
+</div>
+
+<a id="downloadLink" style="display:none"></a>
+
+<script src="script.js"></script>
 </body>
 </html>
